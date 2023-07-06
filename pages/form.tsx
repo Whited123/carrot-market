@@ -7,7 +7,11 @@ interface LoginForm {
 }
 
 export default function Forms() {
-  const { register, handleSubmit } = useForm<LoginForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>();
   const onVaild = (data: LoginForm) => {
     console.log("하이 베이비");
   };
@@ -19,9 +23,9 @@ export default function Forms() {
       <input
         {...register("username", {
           required: "Username is required",
-          minLength: {
-            message: "Your username is too short.",
-            value: 5,
+          validate: {
+            notGmail: (value) =>
+              !value.includes("@gmail.com") || "Gmail은 출입불가요",
           },
         })}
         type="text"
@@ -31,8 +35,10 @@ export default function Forms() {
         {...register("email", {
           required: "Password is required",
         })}
+        type="email"
         placeholder="Email"
       />
+      {errors.email?.message}
       <input
         {...register("password", {
           required: "Email is required",
